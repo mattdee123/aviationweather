@@ -131,11 +131,11 @@ func writeLine(tx *sql.Tx, text string) error {
 		return fmt.Errorf("bad time %q: %w", parts[2], err)
 	}
 	_, err = psql.Insert("metars").SetMap(map[string]interface{}{
-		"station":   station,
-		"time":      observationTime,
-		"csv_parts": pq.StringArray(parts),
+		"station":          station,
+		"observation_time": observationTime,
+		"csv_parts":        pq.StringArray(parts),
 	}).
-		Suffix("ON CONFLICT (station, time) DO UPDATE set csv_parts=EXCLUDED.csv_parts").
+		Suffix("ON CONFLICT (station, observation_time) DO UPDATE set csv_parts=EXCLUDED.csv_parts").
 		RunWith(tx).
 		Exec()
 	if err != nil {

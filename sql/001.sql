@@ -1,6 +1,6 @@
 CREATE TABLE metars (
     station text,
-    time timestamptz,
+    observation_time timestamptz,
     csv_parts text[],
-    primary key (station, time)
+    primary key (station, observation_time)
 )

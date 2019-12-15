@@ -1,5 +1,6 @@
 #!/bin/bash
-# can be run remotely using ssh do2 'bash -s' < scripts/build
+# can be run remotely using
+#   ssh do2 'bash -s' < scripts/build
 set -e
 
 cd ~/aviationweather

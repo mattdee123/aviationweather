@@ -1,4 +1,4 @@
-module mattdee123/aviationweather
+module mattdee123.com/aviationweather
 
 go 1.13
 

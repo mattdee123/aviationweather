@@ -96,7 +96,7 @@ func fileToDB(db *sql.DB, fname string) error {
 	}
 	defer tx.Rollback()
 	for scanner.Scan() {
-		text := strings.ToValidUTF8(scanner.Text(), "<ENCODING ERROR>")
+		text := strings.ReplaceAll(scanner.Text(), "\x00", "")
 		if err := writeLine(tx, text); err != nil {
 			return fmt.Errorf("writing line %q: %w", text, err)
 		}

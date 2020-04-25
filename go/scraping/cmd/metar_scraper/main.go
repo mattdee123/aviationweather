@@ -33,16 +33,18 @@ var metarHeaders = []*regexp.Regexp{
 }
 
 type Flags struct {
-	dbURL    string
-	filename string
-	download bool
+	dbURL      string
+	filename   string
+	download   bool
+	deleteFile bool
 }
 
 func (f *Flags) Parse(args []string) {
 	fs := flag.NewFlagSet("", flag.ExitOnError)
 	fs.StringVar(&f.dbURL, "dburl", "", "url or connection string to the database")
 	fs.StringVar(&f.filename, "filename", "", "filename to read from")
-	fs.BoolVar(&f.download, "download", true, "if set, file will be downloaded and deleted on success")
+	fs.BoolVar(&f.download, "download", true, "if set, file will be downloaded")
+	fs.BoolVar(&f.deleteFile, "delete", true, "if set, file will be deleted on success")
 	fs.Parse(args)
 }
 
@@ -69,7 +71,7 @@ func run(flags *Flags) error {
 	if err := fileToDB(db, flags.filename); err != nil {
 		return fmt.Errorf("storing in database: %w", err)
 	}
-	if flags.download {
+	if flags.deleteFile {
 		if err := os.Remove(flags.filename); err != nil {
 			return fmt.Errorf("removing file: %w", err)
 		}
@@ -94,7 +96,7 @@ func fileToDB(db *sql.DB, fname string) error {
 	}
 	defer tx.Rollback()
 	for scanner.Scan() {
-		text := scanner.Text()
+		text := strings.ToValidUTF8(scanner.Text(), "<ENCODING ERROR>")
 		if err := writeLine(tx, text); err != nil {
 			return fmt.Errorf("writing line %q: %w", text, err)
 		}

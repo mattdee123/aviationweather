@@ -130,7 +130,7 @@ func writeLine(tx *sql.Tx, text string) error {
 	// sometimes there's a cut-off line.  some rough heuristics to catch this
 	if len(parts) < 3 || len(parts[0]) < 5 {
 		log.Printf("invalid line %q\n", text)
-		return
+		return nil
 	}
 	station := parts[1]
 	observationTime, err := time.Parse(time.RFC3339, parts[2])
